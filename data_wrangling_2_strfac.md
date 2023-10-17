@@ -172,3 +172,75 @@ str_detect(vec_str, "\\[[0-9]")
     ## [1]  TRUE FALSE FALSE  TRUE
 
 ## Factors
+
+``` r
+vec_sex =factor(c("male", "male", "female", "female"))
+vec_sex
+```
+
+    ## [1] male   male   female female
+    ## Levels: female male
+
+``` r
+as.numeric(vec_sex)
+```
+
+    ## [1] 2 2 1 1
+
+``` r
+vec_sex = fct_relevel(vec_sex, "male")
+vec_sex
+```
+
+    ## [1] male   male   female female
+    ## Levels: male female
+
+``` r
+as.numeric(vec_sex)
+```
+
+    ## [1] 1 1 2 2
+
+## NSDUH again
+
+``` r
+nsduh_url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+
+table_marj = 
+  read_html(nsduh_url) |> 
+  html_table() |> 
+  first() |> 
+  slice(-1)
+```
+
+Need to tidy this df. Deal with columns, convert to long form
+
+``` r
+df_marj = table_marj |> 
+  select(-contains("P Value")) |> 
+  pivot_longer(-State,
+    names_to = "age_year",
+    values_to = "percent") |> 
+  separate(
+    age_year, 
+    into = c("age", "year"), 
+    "\\(" ) |> 
+  mutate(year = str_remove(year, "\\)"),
+         percent = str_remove(percent, "[a-b]"),
+         percent = as.numeric(percent)) |> 
+  filter(!State %in% c("Total U.S.", "Northeast", "Midwest", "South", "West"))
+```
+
+Make a plot
+
+``` r
+df_marj |> 
+  filter(age == "18-25") |> 
+  mutate(State = fct_reorder(State, percent)) |> 
+  ggplot(aes(x = State, y = percent, color = year)) +
+  geom_point() +
+#rotate text and align
+  theme(axis.text.x = element_text(angle = 90, vjust =0.5, hjust =1))
+```
+
+<img src="data_wrangling_2_strfac_files/figure-gfm/unnamed-chunk-1-1.png" width="90%" />
