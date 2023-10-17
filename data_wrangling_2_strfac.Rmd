@@ -165,5 +165,46 @@ df_marj |>
   theme(axis.text.x = element_text(angle = 90, vjust =0.5, hjust =1))
 ```
 
+## Res inspect
 
+```{r import data}
+data("rest_inspec") 
+```
 
+```{r}
+rest_inspec |> 
+  count(boro, grade) |> 
+  pivot_wider(names_from = grade, values_from = n) |> 
+  knitr::kable()
+```
+
+```{r}
+df_inspec <- 
+  rest_inspec |> 
+  filter(grade %in% c("A", "B", "C", boro !="Missing")) |> 
+  mutate(boro = str_to_title(boro),
+         dba = str_to_upper(dba))
+```
+
+```{r}
+df_inspec |> 
+  filter(str_detect(dba, "PIZZA")) |> 
+  count(boro)
+```
+
+```{r}
+df_inspec |> 
+  filter(str_detect(dba, "PIZZA")) |> 
+  mutate(boro = fct_infreq(boro)) |> 
+  ggplot(aes(x = boro, fill = grade)) +
+  geom_bar()
+```
+
+```{r}
+df_inspec |> 
+  filter(str_detect(dba, "PIZZA")) |> 
+  mutate(boro = fct_infreq(boro),
+         boro = fct_recode(boro, "The City" = "Manhattan")) |> 
+  ggplot(aes(x = boro, fill = grade)) +
+  geom_bar()
+```
