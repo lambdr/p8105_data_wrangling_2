@@ -1,11 +1,9 @@
----
-title: "Strings & Factors"
-author: "Derek Lamb"
-date: "`r Sys.Date()`"
-output: github_document
----
+Strings & Factors
+================
+Derek Lamb
+2023-10-17
 
-```{r load packages, message = FALSE}
+``` r
 library(tidyverse)
 library(rvest)
 library(p8105.datasets)
@@ -30,20 +28,41 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ## Strings and manipulation
 
-```{r look within str}
+``` r
 vec_str <- c("my","name","is","derek")
 
 #look for specific sets, case sensitive
 str_detect(vec_str, "derek")
-str_detect(vec_str, "e")
-str_detect(vec_str, "Name")
+```
 
+    ## [1] FALSE FALSE FALSE  TRUE
+
+``` r
+str_detect(vec_str, "e")
+```
+
+    ## [1] FALSE  TRUE FALSE  TRUE
+
+``` r
+str_detect(vec_str, "Name")
+```
+
+    ## [1] FALSE FALSE FALSE FALSE
+
+``` r
 #replace parts of string
 str_replace(vec_str, "derek", "Derek")
+```
+
+    ## [1] "my"    "name"  "is"    "Derek"
+
+``` r
 str_replace(vec_str, "e", "E")
 ```
 
-```{r location within str}
+    ## [1] "my"    "namE"  "is"    "dErek"
+
+``` r
 vec_str = c(
   "i think we all rule for participating",
   "i think i have been caught",
@@ -53,12 +72,23 @@ vec_str = c(
 
 # first character ^, last character $
 str_detect(vec_str, "i think")
+```
+
+    ## [1] TRUE TRUE TRUE TRUE
+
+``` r
 str_detect(vec_str, "^i think")
+```
+
+    ## [1]  TRUE  TRUE  TRUE FALSE
+
+``` r
 str_detect(vec_str, "i think$")
 ```
 
+    ## [1] FALSE FALSE FALSE  TRUE
 
-```{r fall themed strings}
+``` r
 vec_str = c(
   "Time for a Pumpkin Spice Latte!",
   "went to the #pumpkinpatch last weekend",
@@ -67,10 +97,17 @@ vec_str = c(
   )
 
 str_detect(vec_str, "pumpkin")
+```
+
+    ## [1] FALSE  TRUE FALSE FALSE
+
+``` r
 str_detect(vec_str, "[Pp]umpkin")
 ```
 
-```{r numbers in strings}
+    ## [1]  TRUE  TRUE  TRUE FALSE
+
+``` r
 vec_str = c(
   '7th inning stretch',
   '1st half soon to begin. Texas won the toss.',
@@ -79,11 +116,23 @@ vec_str = c(
   )
 
 str_detect(vec_str, "[0-9]")
+```
+
+    ## [1] TRUE TRUE TRUE TRUE
+
+``` r
 str_detect(vec_str, "^[0-9]")
+```
+
+    ## [1]  TRUE  TRUE FALSE  TRUE
+
+``` r
 str_detect(vec_str, "^[0-9][a-z]")
 ```
 
-```{r specific phrases in strings}
+    ## [1]  TRUE  TRUE FALSE FALSE
+
+``` r
 vec_str = c(
   'Its 7:11 in the evening',
   'want to go to 7-11?',
@@ -93,11 +142,17 @@ vec_str = c(
 
 # a . is a placeholder for anything, \\ is special character
 str_detect(vec_str, "7.11")
+```
+
+    ## [1]  TRUE  TRUE FALSE  TRUE
+
+``` r
 str_detect(vec_str, "\\.")
 ```
 
-```{r special characters}
+    ## [1] FALSE FALSE FALSE  TRUE
 
+``` r
 vec_str = c(
   'The CI is [2, 5]',
   ':-]',
@@ -106,8 +161,14 @@ vec_str = c(
   )
 
 str_detect(vec_str, "\\[")
+```
+
+    ## [1]  TRUE FALSE  TRUE  TRUE
+
+``` r
 str_detect(vec_str, "\\[[0-9]")
 ```
 
+    ## [1]  TRUE FALSE FALSE  TRUE
 
 ## Factors
